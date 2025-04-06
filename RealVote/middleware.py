@@ -1,4 +1,7 @@
 from django.conf import settings
+from django.http import HttpResponseRedirect
+from django.urls import reverse
+from django.utils.deprecation import MiddlewareMixin
 from django.utils.timezone import now
 from django.utils.dateparse import parse_datetime
 from django.contrib.auth import logout
@@ -25,4 +28,21 @@ class SessionTimeoutMiddleware:
                             return redirect('login')
                 request.session['session_timeout_last_active'] = current_time.isoformat()
         response = self.get_response(request)
+        return response
+
+class RedirectMiddleware:
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        if request.user.is_authenticated and request.path == '/':
+            return HttpResponseRedirect(reverse('voting:dashboard'))
+        return self.get_response(request)
+
+
+class Redirect404ToLoginMiddleware(MiddlewareMixin):
+    def process_response(self, request, response):
+        if response.status_code == 404:
+            return redirect('login')
         return response

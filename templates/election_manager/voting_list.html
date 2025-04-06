@@ -1,7 +1,47 @@
 {% extends 'base.html' %}
-{% block content %}
 {% load static %}
 
-HAHAHAH
+{% block content %}
+<link rel="stylesheet" href="{% static 'voting_list.css' %}">
+<div class="container">
+    {% if user.is_authenticated %}
+            <div class="most-voted-section">
+                <h2>Elections with the Most Votes</h2>
+                {% if most_voted_elections %}
+                    {% for election in most_voted_elections %}
+                        <div class="election-card">
+                            <h3>{{ election.title }}</h3>
+                            <p>Votes: {{ election.total_votes }}</p>
+                            <p>Organized by: {{ election.organization }}</p>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No elections available with the most votes.</p>
+                {% endif %}
+            </div>
+    {% else %}
+        <p>Please log in to view the elections.</p>
+    {% endif %}
+    {% if user.is_authenticated %}
+            <div class="latest-elections-section">
+                <h2>Latest Elections</h2>
+                {% if latest_elections %}
+                    {% for election in latest_elections|slice:":3" %}
+                        <div class="election-card">
+                            <h3>{{ election.title }}</h3>
+                            <p>Date: {{ election.date }}</p>
+                            <p>Organized by: {{ election.organization }}</p>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No recent elections available.</p>
+                {% endif %}
+            </div>
+    {% else %}
+        <p>Please log in to view the elections.</p>
+    {% endif %}
+
+</div>
+
 
 {% endblock %}

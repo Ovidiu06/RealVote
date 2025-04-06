@@ -49,6 +49,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'RealVote.middleware.SessionTimeoutMiddleware',
+    'RealVote.middleware.RedirectMiddleware',
+    'RealVote.middleware.Redirect404ToLoginMiddleware',
 ]
 
 ROOT_URLCONF = 'RealVote.urls'
@@ -141,3 +143,5 @@ SESSION_COOKIE_AGE = 300
 SESSION_TIMEOUT_MINUTES = 5
 
 SESSION_SAVE_EVERY_REQUEST = True
+
+AUTH_USER_MODEL = 'election_manager.CustomUser'

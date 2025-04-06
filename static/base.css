@@ -36,7 +36,7 @@ body {
 }
 
 .main-content {
-    margin-left: 220px;
+    margin-left: 200px;
     width: calc(100% - 250px);
     display: flex;
     flex-direction: column;

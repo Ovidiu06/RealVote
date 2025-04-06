@@ -1,5 +1,18 @@
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, AbstractUser
 from django.db import models
+
+from RealVote import settings
+
+
+class CustomUser(AbstractUser):
+    USER_TYPE_CHOICES = [
+        ('voter', 'Voter'),
+        ('institution', 'Institution'),
+    ]
+    user_type = models.CharField(max_length=20, choices=USER_TYPE_CHOICES, default='voter')
+
+    def __str__(self):
+        return f"{self.username} ({self.get_user_type_display()})"
 
 
 class ElectionEvent(models.Model):
@@ -52,7 +65,7 @@ class VoterProfile(models.Model):
         ('other', 'Other'),
     ]
 
-    user = models.OneToOneField('auth.User', related_name='voter_profile', on_delete=models.CASCADE)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, related_name='voter_profile', on_delete=models.CASCADE)
     cnp = models.CharField(max_length=13, unique=True)
     date_of_birth = models.DateField()
     phone_number = models.CharField(max_length=20)
@@ -68,8 +81,9 @@ class VoterProfile(models.Model):
     def __str__(self):
         return f"{self.user.username} - {self.cnp}"
 
+
 class Vote(models.Model):
-    voter = models.ForeignKey(User, related_name='vote_records', on_delete=models.CASCADE)
+    voter = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='vote_records', on_delete=models.CASCADE)
     option = models.ForeignKey('Option', related_name='vote_records', on_delete=models.CASCADE)
     voted_at = models.DateTimeField(auto_now_add=True)
 
@@ -82,7 +96,7 @@ class Vote(models.Model):
 
 class ElectionLog(models.Model):
     election_event = models.ForeignKey(ElectionEvent, related_name='audit_logs', on_delete=models.CASCADE)
-    action_performed_by = models.ForeignKey(User, related_name='audit_actions', on_delete=models.SET_NULL, null=True)
+    action_performed_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='audit_actions', on_delete=models.SET_NULL, null=True)
     action_description = models.CharField(max_length=255)
     timestamp = models.DateTimeField(auto_now_add=True)
 

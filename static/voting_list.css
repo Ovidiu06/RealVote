@@ -1,0 +1,19 @@
+.container {
+        width: 100%;
+        margin: auto;
+        padding: 20px;
+    }
+    .most-voted-section, .latest-elections-section {
+        background-color: #FFFAF0;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+    .election-card {
+        border-bottom: 1px solid #ddd;
+        padding: 10px 0;
+    }
+    .election-card:last-child {
+        border-bottom: none;
+    }
